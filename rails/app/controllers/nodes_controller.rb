@@ -5,7 +5,7 @@ class NodesController < ApplicationController
   def common_ancestor
     first_node = get_node(params[:a])
     second_node = get_node(params[:b])
-    data = NodeService.info(first_node: first_node, second_node: second_node)
+    data = NodeService.ancestors_records(first_node: first_node, second_node: second_node)
     render json: { data: data }
   end
 

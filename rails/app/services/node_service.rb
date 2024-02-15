@@ -1,6 +1,6 @@
 # app/services/node_service.rb
 class NodeService
-  def self.info(first_node:, second_node:)
+  def self.ancestors_records(first_node:, second_node:)
     return same_node_info(first_node) if first_node == second_node
 
     first_node_ancestors = ancestors(first_node)
@@ -16,7 +16,7 @@ class NodeService
     { root: root, lowest_common_ancestor: lowest_common_ancestor, depth: depth }
   end
 
-  def self.same_node_info(node)
+  def self.same_node_ancestors_records(node)
     node_ancestors = ancestors(node)
     lowest_common_ancestor = node.id
     root = node_ancestors.last
