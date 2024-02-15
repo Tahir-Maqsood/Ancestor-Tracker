@@ -1,4 +1,6 @@
-# app/services/node_service.rb
+# frozen_string_literal: true
+
+# node_service.rb
 class NodeService
   def self.ancestors_records(first_node:, second_node:)
     return same_node_info(first_node) if first_node == second_node
