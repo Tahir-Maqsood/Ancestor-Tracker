@@ -1,41 +1,24 @@
 import React, { useState } from 'react';
-import "./style.css";
+import useRecordFetch from '../CustomHook/useRecordFetch';
+import './style.css';
 
 const CommonAncestor = () => {
   const [nodeA, setNodeA] = useState('');
   const [nodeB, setNodeB] = useState('');
-  const [result, setResult] = useState(null);
-  const [error, setError] = useState('');
+  const [inputError, setInputError] = useState(null);
 
-  const fetchCommonAncestor = async () => {
+  const BACKEND_BASE_URL = import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL;
+
+  const COMMON_ANCESTORS_URL = `${BACKEND_BASE_URL}/common_ancestor?a=${nodeA}&b=${nodeB}`;
+  
+  const { record: ancestors, error, fetchRecord } = useRecordFetch(COMMON_ANCESTORS_URL);
+
+  const handleFetchCommonAncestor = () => {
     if (nodeA.trim() === '' || nodeB.trim() === '') {
-      setError('Please enter both Node A ID and Node B ID.');
-      setResult(null);
+      setInputError('Please enter both Node A ID and Node B ID.');
       return;
     }
-
-    try {
-      const response = await fetch(`http://localhost:3000/common_ancestor?a=${nodeA}&b=${nodeB}`);
-      if (response.status === 404) {
-        setError('Record not found.');
-        setResult(null);
-        return;
-      }
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const ancestors = await response.json();
-      if (ancestors && ancestors.data) {
-        setResult(ancestors.data);
-        setError('');
-      } else {
-        setError('Ancestor data not found.');
-        setResult(null);
-      }
-    } catch (error) {
-      setError('Error fetching data. Please try again later.');
-      setResult(null);
-    }
+    fetchRecord();
   };
 
   return (
@@ -43,9 +26,10 @@ const CommonAncestor = () => {
       <h2 className="title">Find Common Ancestor</h2>
       <input type="number" min="0" placeholder="Node A ID" value={nodeA} onChange={(e) => setNodeA(e.target.value)} />
       <input type="number" min="0" placeholder="Node B ID" value={nodeB} onChange={(e) => setNodeB(e.target.value)} />
-      <button onClick={fetchCommonAncestor}>Find Ancestor</button>
+      <button onClick={handleFetchCommonAncestor}>Find Ancestor</button>
       {error && <p className="error">{error}</p>}
-      {result && (
+      {inputError && <p className="error">{inputError}</p>}
+      {ancestors && (
         <table className="table">
           <thead>
             <tr>
@@ -56,15 +40,15 @@ const CommonAncestor = () => {
           <tbody>
             <tr>
               <td className="table-cell">Root ID</td>
-              <td className="table-cell">{result.root}</td>
+              <td className="table-cell">{ancestors.root}</td>
             </tr>
             <tr>
               <td className="table-cell">Lowest Common Ancestor</td>
-              <td className="table-cell">{result.lca}</td>
+              <td className="table-cell">{ancestors.lca}</td>
             </tr>
             <tr>
               <td className="table-cell">Depth</td>
-              <td className="table-cell">{result.depth}</td>
+              <td className="table-cell">{ancestors.depth}</td>
             </tr>
           </tbody>
         </table>
