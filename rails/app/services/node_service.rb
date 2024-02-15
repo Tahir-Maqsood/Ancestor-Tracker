@@ -32,7 +32,6 @@ class NodeService
   def self.ancestors(node)
     current_node = node
     ancestors = [current_node.id]
-    # while current_node.parent
     while current_node.parent && current_node.parent != current_node
       current_node = current_node.parent
       ancestors << current_node.id
