@@ -1,6 +1,10 @@
+# frozen_string_literal: true
+
 require_relative "boot"
 
 require "rails/all"
+
+Bundler.require(*Rails.groups)
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -10,6 +14,8 @@ module AncestorTracker
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.1
+
+    Dotenv::Railtie.load
 
     # Please, add to the `ignore` list any other `lib` subdirectories that do
     # not contain `.rb` files, or that should not be reloaded or eager loaded.

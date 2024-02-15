@@ -10,7 +10,7 @@ const CommonAncestor = () => {
   const BACKEND_BASE_URL = import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL;
 
   const COMMON_ANCESTORS_URL = `${BACKEND_BASE_URL}/common_ancestor?a=${nodeA}&b=${nodeB}`;
-  
+
   const { record: ancestors, error, fetchRecord } = useRecordFetch(COMMON_ANCESTORS_URL);
 
   const handleFetchCommonAncestor = () => {
@@ -44,7 +44,7 @@ const CommonAncestor = () => {
             </tr>
             <tr>
               <td className="table-cell">Lowest Common Ancestor</td>
-              <td className="table-cell">{ancestors.lca}</td>
+              <td className="table-cell">{ancestors.lowest_common_ancestor}</td>
             </tr>
             <tr>
               <td className="table-cell">Depth</td>

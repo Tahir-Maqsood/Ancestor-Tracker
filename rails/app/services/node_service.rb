@@ -1,23 +1,42 @@
+# app/services/node_service.rb
 class NodeService
-  def self.find_common_ancestor(node_a, node_b)
-    return {root_id: nil, lowest_common_ancestor: nil, depth: nil} if node_a.nil? || node_b.nil?
+  def self.info(first_node:, second_node:)
+    return same_node_info(first_node) if first_node == second_node
 
-    path_a = path_to_root(node_a)
-    path_b = path_to_root(node_b)
+    first_node_ancestors = ancestors(first_node)
+    second_node_ancestors = ancestors(second_node)
 
-    common_ancestor = (path_a & path_b).first
-    return {root_id: nil, lowest_common_ancestor: nil, depth: nil} unless common_ancestor
+    lowest_common_ancestor = lowest_common_ancestor(first_node_ancestors: first_node_ancestors, second_node_ancestors: second_node_ancestors)
 
-    depth = path_to_root(common_ancestor).length
-    {root_id: path_a.last.id, lowest_common_ancestor: common_ancestor.id, depth: depth}
+    return { root: nil, lowest_common_ancestor: nil, depth: nil } if lowest_common_ancestor.nil?
+
+    root = first_node_ancestors.last
+    depth = first_node_ancestors.index(root) - first_node_ancestors.index(lowest_common_ancestor) + 1
+
+    { root: root, lowest_common_ancestor: lowest_common_ancestor, depth: depth }
   end
 
-  def self.path_to_root(node)
-    path = []
-    while node
-      path << node
-      node = node.parent
+  def self.same_node_info(node)
+    node_ancestors = ancestors(node)
+    lowest_common_ancestor = node.id
+    root = node_ancestors.last
+    depth = (node_ancestors.index(root) - node_ancestors.index(lowest_common_ancestor)) + 1
+
+    { root: root, lowest_common_ancestor: lowest_common_ancestor, depth: depth }
+  end
+
+  def self.lowest_common_ancestor(first_node_ancestors:, second_node_ancestors:)
+    (first_node_ancestors & second_node_ancestors).first
+  end
+
+  def self.ancestors(node)
+    current_node = node
+    ancestors = [current_node.id]
+    # while current_node.parent
+    while current_node.parent && current_node.parent != current_node
+      current_node = current_node.parent
+      ancestors << current_node.id
     end
-    path
+    ancestors
   end
 end
